@@ -66,7 +66,7 @@ const handleLogin = async () => {
         })
         console.log(response)
         // 存储token
-        localStorage.setItem('token', response.data.token)
+        localStorage.setItem('token', response.token)
         ElMessage.success('登录成功')
         // 跳转到账号中心页面
         router.push('/account')
