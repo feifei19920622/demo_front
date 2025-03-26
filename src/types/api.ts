@@ -8,10 +8,8 @@ export interface LoginRequest {
 export interface LoginResponse {
   code: number
   message: string
-  data: {
-    token: string
-    userId: number
-  }
+  token: string
+  userId: number
 }
 
 // 用户信息类型
