@@ -33,7 +33,6 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
-import { User, Lock } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 import { login } from '../api/auth'
 
@@ -67,7 +66,7 @@ const handleLogin = async () => {
         })
         console.log(response)
         // 存储token
-        localStorage.setItem('token', response.token)
+        localStorage.setItem('token', response.data.token)
         ElMessage.success('登录成功')
         // 跳转到账号中心页面
         router.push('/account')

@@ -13,3 +13,11 @@ export interface LoginResponse {
     userId: number
   }
 }
+
+// 用户信息类型
+export interface UserInfo {
+  userId: number
+  username: string
+  email: string
+  createTime: string
+}

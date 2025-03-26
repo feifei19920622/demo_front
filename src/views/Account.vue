@@ -6,7 +6,10 @@
           <h2>账号中心</h2>
         </div>
       </template>
-      <div class="user-info">
+      <div v-if="loading" class="loading-container">
+        <el-skeleton :rows="4" animated />
+      </div>
+      <div v-else class="user-info">
         <div class="avatar-section">
           <el-avatar :size="100" :src="userInfo.avatar">
             <img src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"/>
@@ -25,7 +28,7 @@
               {{ userInfo.email }}
             </el-descriptions-item>
             <el-descriptions-item label="注册时间">
-              {{ userInfo.registerTime }}
+              {{ formatDate(userInfo.createTime) }}
             </el-descriptions-item>
           </el-descriptions>
         </div>
@@ -35,14 +38,48 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
+import { getUserInfo } from '../api/user'
 
+const loading = ref(true)
 const userInfo = reactive({
-  username: '示例用户',
-  phone: '13800138000',
-  email: 'example@example.com',
-  registerTime: '2024-01-01',
+  userId: 0,
+  username: '',
+  phone: '',
+  email: '',
+  createTime: '',
   avatar: ''
+})
+
+// 格式化日期
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return ''
+  const date = new Date(dateStr)
+  return date.toLocaleDateString()
+}
+
+// 获取用户信息
+const fetchUserInfo = async () => {
+  try {
+    loading.value = true
+    const data = await getUserInfo()
+    userInfo.userId = data.userId
+    userInfo.username = data.username
+    userInfo.email = data.email
+    userInfo.createTime = data.createTime
+    // 处理可能缺失的数据
+    userInfo.phone = userInfo.phone || '未设置'
+  } catch (error) {
+    console.error('获取用户信息失败:', error)
+    ElMessage.error('获取用户信息失败')
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  fetchUserInfo()
 })
 </script>
 
@@ -88,5 +125,9 @@ const userInfo = reactive({
 
 .mt-2 {
   margin-top: 8px;
+}
+
+.loading-container {
+  padding: 40px 20px;
 }
 </style>
